@@ -1,24 +1,28 @@
 {
-  "name": "service",
-  "version": "0.0.1",
-  "description": "Node Implementation for Service Lib from Embedded Enterprises",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/creatdevsolutions/service.git"
-  },
-  "author": "Johann Wagner, Martin Koppehel",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/creatdevsolutions/service/issues"
-  },
-  "homepage": "https://github.com/creatdevsolutions/service#readme",
-  "dependencies": {
-    "autobahn": "^18.3.2",
-    "lodash": "^4.17.10",
-    "logplease": "^1.2.14"
-  }
+	"name": "@creatdevsolutions/service",
+	"version": "0.0.1",
+	"publishConfig": {
+		"registry": "https://registry.npmjs.com",
+		"access": "public"
+	},
+	"description": "Node Implementation for Service Lib from Embedded Enterprises",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/creatdevsolutions/service.git"
+	},
+	"author": "Johann Wagner, Martin Koppehel",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/creatdevsolutions/service/issues"
+	},
+	"homepage": "https://github.com/creatdevsolutions/service#readme",
+	"dependencies": {
+		"autobahn": "^18.3.2",
+		"lodash": "^4.17.10",
+		"logplease": "^1.2.14"
+	}
 }

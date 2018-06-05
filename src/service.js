@@ -36,12 +36,12 @@ class Service {
         const autobahnConfiguration = {
             url: this._serviceConfiguration.url,
             realm: this._serviceConfiguration.realm,
-            authid: this._serviceConfiguration.user,
-            authmethods: ["ticket"],
         };
 
         if(this._serviceConfiguration.useAuth) {
             autobahnConfiguration.onchallenge = this.onChallenge.bind(this);
+            autobahnConfiguration.authid = this._serviceConfiguration.user;
+            autobahnConfiguration.authmethods= ["ticket"];
         }
 
 
