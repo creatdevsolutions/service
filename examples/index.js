@@ -1,12 +1,34 @@
 const Service = require('../src/service');
 
-const serviceConfiguration = {
+const fs = require('fs');
+const path = require('path');
+
+let serviceConfiguration = {
     realm: 'slimerp',
-    url: 'ws://localhost:8001',
-    user: 'root',
-    password: 'root',
-    useAuth: true
+    url: 'wss://localhost:8000',
+    //user: 'example',
+    //password: 'root',
+    //useAuth: true,
 };
+
+
+if (process.env.USE_TLS) {
+
+    const caPath = process.env.TLS_CA_CERT || path.join('certs', 'ca.crt');
+    const certPath = process.env.TLS_CERT || path.join('certs', 'cert.crt');
+    const keyPath = process.env.TLS_KEY || path.join('certs', 'cert.key');
+
+    const ca = fs.readFileSync(caPath);
+    const cert = fs.readFileSync(certPath);
+    const key = fs.readFileSync(keyPath);
+
+    serviceConfiguration.useTLS = true;
+    serviceConfiguration.tlsConfiguration = {
+        ca,
+        cert,
+        key
+    }
+}
 
 const service = new Service(serviceConfiguration);
 
@@ -43,7 +65,7 @@ service.connect().then((session) => {
 
 
     session.call('com.service.test').then((result) => {
-        console.log(result);
+    //    console.log(result);
     })
 }).catch((err) => {
     // Will be called on Connection Error.

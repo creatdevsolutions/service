@@ -21,6 +21,7 @@
 	},
 	"homepage": "https://github.com/creatdevsolutions/service#readme",
 	"dependencies": {
+		"@cs/bundesstrasse": "^18.6.28",
 		"autobahn": "^18.3.2",
 		"lodash": "^4.17.10",
 		"logplease": "^1.2.14"
