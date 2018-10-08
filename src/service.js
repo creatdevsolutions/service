@@ -113,13 +113,15 @@ class Service {
 
             let isPromiseRejected = false;
 
-            this._bundesstrasseConnection.onopen = (session) => {
+            this._bundesstrasseConnection.onopen = (session, welcomeDict) => {
                 logger.info('Connected is open and healthy.');
                 this._bundesstrasseSession = session;
 
                 if (bundesstrasseConfiguration.isPingEnabled) {
                     this._pingInstance.startPing();
                 }
+
+                session.welcomeDict = welcomeDict;
 
                 resolve(session);
             };
