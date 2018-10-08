@@ -24,13 +24,15 @@ class Service {
 
     onChallenge(session, method, extra) {
 
+        const challengeExtra = this._serviceConfiguration.onChallengeExtra;
+
         // Ticket Authentication
         if (method === 'ticket') {
-            return this._serviceConfiguration.password;
+            return [this._serviceConfiguration.password, challengeExtra];
         } else if (method === 'tls') {
             return "";
         } else if (method === 'resume') {
-            return this._serviceConfiguration.resumeToken;
+            return [this._serviceConfiguration.resumeToken, challengeExtra];
         } else {
             throw Error(`No Challenge for Authentication Method ${method}`)
         }
