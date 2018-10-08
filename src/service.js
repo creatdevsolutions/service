@@ -24,7 +24,12 @@ class Service {
 
     onChallenge(session, method, extra) {
 
-        const challengeExtra = this._serviceConfiguration.onChallengeExtra;
+        const challengeExtra = {};
+
+        if (this._serviceConfiguration.generateResumeToken) {
+            challengeExtra['generate-token'] = true;
+        }
+
 
         // Ticket Authentication
         if (method === 'ticket') {
