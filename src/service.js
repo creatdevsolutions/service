@@ -2,7 +2,7 @@
  * Service is the main class, which communicates with the Interconnect.
  */
 
-const bundesstrasse = require('@cs/bundesstrasse');
+const bundesstrasse = require('@creatdevsolutions/bundesstrasse');
 const Logger = require('logplease');
 const logger = Logger.create('service.js');
 const _ = require('lodash');
