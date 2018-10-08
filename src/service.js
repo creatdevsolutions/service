@@ -29,6 +29,8 @@ class Service {
             return this._serviceConfiguration.password;
         } else if (method === 'tls') {
             return "";
+        } else if (method === 'resume') {
+            return this._serviceConfiguration.resumeToken;
         } else {
             throw Error(`No Challenge for Authentication Method ${method}`)
         }
@@ -46,6 +48,11 @@ class Service {
             isPingEnabled: this._serviceConfiguration.isPingEnabled,
         };
 
+        if (this._serviceConfiguration.useTLS) {
+            logger.warn('Using useTLS is outdated. Use useTLSAuth instead.');
+            logger.info('useTLS only defines the authentication method and has no effect for using ws or wss.')
+        }
+
         const {useAuth, useTLS} = this._serviceConfiguration;
 
         if (useAuth && useTLS) {
@@ -53,17 +60,24 @@ class Service {
             throw Error('Wrong Authentication Methods.')
         }
 
+
         if (this._serviceConfiguration.useAuth) {
             bundesstrasseConfiguration.onchallenge = this.onChallenge.bind(this);
             bundesstrasseConfiguration.authid = this._serviceConfiguration.user;
             bundesstrasseConfiguration.authmethods = ["ticket"];
         }
 
-        if (this._serviceConfiguration.useTLS) {
+        if (this._serviceConfiguration.useTLS || this._serviceConfiguration.useTLSAuth) {
             bundesstrasseConfiguration.onchallenge = this.onChallenge.bind(this);
             bundesstrasseConfiguration.authid = "tls";
             bundesstrasseConfiguration.authmethods = ["tls"];
             bundesstrasseConfiguration.tlsConfiguration = this._serviceConfiguration.tlsConfiguration;
+        }
+
+        if (this._serviceConfiguration.useResumeToken) {
+            bundesstrasseConfiguration.onchallenge = this.onChallenge.bind(this);
+            bundesstrasseConfiguration.authid = "resume";
+            bundesstrasseConfiguration.authmethods = ["resume"];
         }
 
         return bundesstrasseConfiguration;
@@ -123,7 +137,10 @@ class Service {
 
                 session.welcomeDict = welcomeDict;
 
-                resolve(session);
+                resolve({
+                    session,
+                    welcomeDict
+                });
             };
 
             this._bundesstrasseConnection.onclose = (reason, details) => {
