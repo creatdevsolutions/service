@@ -53,10 +53,10 @@ class Service {
             logger.info('useTLS only defines the authentication method and has no effect for using ws or wss.')
         }
 
-        const {useAuth, useTLS} = this._serviceConfiguration;
+        const {useAuth, useTLS, useTLSAuth, useResumeToken} = this._serviceConfiguration;
 
-        if (useAuth && useTLS) {
-            logger.error('You cannot use TLS Authentication and Ticket Authentication at the same time.');
+        if (useAuth && useTLS && useTLSAuth && useResumeToken) {
+            logger.error('You cannot use multiple authentications at the same time.');
             throw Error('Wrong Authentication Methods.')
         }
 
