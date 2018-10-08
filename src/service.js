@@ -38,12 +38,13 @@ class Service {
         const bundesstrasseConfiguration = {
             url: this._serviceConfiguration.url,
             realm: this._serviceConfiguration.realm,
+            max_retries: this._serviceConfiguration.enableRetry ? 15 : 0
         };
 
         const {useAuth, useTLS} = this._serviceConfiguration;
 
-        if(useAuth && useTLS) {
-            logger.error('You cannot use TLS Authentication and Ticket Authentication at the same time.')
+        if (useAuth && useTLS) {
+            logger.error('You cannot use TLS Authentication and Ticket Authentication at the same time.');
             throw Error('Wrong Authentication Methods.')
         }
 
@@ -60,8 +61,11 @@ class Service {
             bundesstrasseConfiguration.tlsConfiguration = this._serviceConfiguration.tlsConfiguration;
         }
 
-
         return bundesstrasseConfiguration;
+    }
+
+    closeConnection() {
+        this._bundesstrasseConnection.close(null, 'User closed connection.');
     }
 
     registerAll(registerProcedures) {
@@ -72,7 +76,7 @@ class Service {
 
         _.forEach(registerProcedures, procedure => {
             const {name, handler, options} = procedure;
-            logger.info(`Registering RPC ${name}.`)
+            logger.info(`Registering RPC ${name}.`);
             this._bundesstrasseSession.register(name, handler, options);
 
         })
@@ -86,7 +90,7 @@ class Service {
 
         _.forEach(subscribeProcedures, procedure => {
             const {name, handler, options} = procedure;
-            logger.info(`Subscribing RPC ${name}.`)
+            logger.info(`Subscribing RPC ${name}.`);
             this._bundesstrasseSession.subscribe(name, handler, options);
         });
 
@@ -101,15 +105,34 @@ class Service {
 
         return new Promise((resolve, reject) => {
 
+            let isPromiseRejected = false;
+
             this._bundesstrasseConnection.onopen = (session) => {
-                logger.info('Connected To Broker.');
+                logger.info('Connected is open and healthy.');
                 this._bundesstrasseSession = session;
                 resolve(session);
             };
 
-            this._bundesstrasseConnection.onerror = (...errorList) => {
-                console.error(errorList);
-                reject(...errorList);
+            this._bundesstrasseConnection.onclose = (reason, details) => {
+
+                /**
+                 * There is a bug in autobahn.js, where onclose is called multiple times for god known reasons.
+                 * Quick Fix: Just reject the promise once and clean logs.
+                 *
+                 * TODO: PR to autobahn.js
+                 */
+
+                if(isPromiseRejected) {
+                    return;
+                }
+
+                isPromiseRejected = true;
+                logger.error('Connection was closed.');
+                logger.error('Reason: ', reason);
+                reject({
+                    reason,
+                    details
+                });
             };
 
             this._bundesstrasseConnection.open();

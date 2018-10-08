@@ -65,10 +65,9 @@ service.connect().then((session) => {
 
 
     session.call('com.service.test').then((result) => {
-    //    console.log(result);
+        service.closeConnection();
     })
 }).catch((err) => {
-    // Will be called on Connection Error.
-    console.error(err);
+
 });
 
