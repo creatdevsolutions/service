@@ -6,6 +6,7 @@ const bundesstrasse = require('@creatdevsolutions/bundesstrasse');
 const Logger = require('logplease');
 const logger = Logger.create('service.js');
 const _ = require('lodash');
+const Ping = require('./ping.js');
 
 class Service {
 
@@ -13,6 +14,9 @@ class Service {
         this._serviceConfiguration = serviceConfiguration;
         this._bundesstrasseConnection = null;
         this._bundesstrasseSession = null;
+
+        this._pingInstance = new Ping(this, this._serviceConfiguration.pingInterval || 1000);
+
 
         logger.info('Created Service.')
 
@@ -38,7 +42,8 @@ class Service {
         const bundesstrasseConfiguration = {
             url: this._serviceConfiguration.url,
             realm: this._serviceConfiguration.realm,
-            max_retries: this._serviceConfiguration.enableRetry ? 15 : 0
+            max_retries: this._serviceConfiguration.enableRetry ? 15 : 0,
+            isPingEnabled: this._serviceConfiguration.isPingEnabled,
         };
 
         const {useAuth, useTLS} = this._serviceConfiguration;
@@ -103,6 +108,7 @@ class Service {
         const bundesstrasseConfiguration = this.getBundesstrasseConfiguration();
         this._bundesstrasseConnection = new bundesstrasse.Connection(bundesstrasseConfiguration);
 
+
         return new Promise((resolve, reject) => {
 
             let isPromiseRejected = false;
@@ -110,6 +116,11 @@ class Service {
             this._bundesstrasseConnection.onopen = (session) => {
                 logger.info('Connected is open and healthy.');
                 this._bundesstrasseSession = session;
+
+                if (bundesstrasseConfiguration.isPingEnabled) {
+                    this._pingInstance.startPing();
+                }
+
                 resolve(session);
             };
 
@@ -122,11 +133,15 @@ class Service {
                  * TODO: PR to autobahn.js
                  */
 
-                if(isPromiseRejected) {
+                if (isPromiseRejected) {
                     return;
                 }
 
                 isPromiseRejected = true;
+                if (bundesstrasseConfiguration.isPingEnabled) {
+                    this._pingInstance.endPing();
+                }
+
                 logger.error('Connection was closed.');
                 logger.error('Reason: ', reason);
                 reject({

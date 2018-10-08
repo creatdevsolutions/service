@@ -6,6 +6,8 @@ const path = require('path');
 let serviceConfiguration = {
     realm: 'slimerp',
     url: 'wss://localhost:8000',
+    isPingEnabled: false,
+    pingInterval: 5000,
     //user: 'example',
     //password: 'root',
     //useAuth: true,
@@ -65,7 +67,7 @@ service.connect().then((session) => {
 
 
     session.call('com.service.test').then((result) => {
-        service.closeConnection();
+        //service.closeConnection();
     })
 }).catch((err) => {
 
