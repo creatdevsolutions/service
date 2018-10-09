@@ -60,9 +60,9 @@ class Service {
             logger.info('useTLS only defines the authentication method and has no effect for using ws or wss.')
         }
 
-        const {useAuth, useTLS, useTLSAuth, useResumeToken} = this._serviceConfiguration;
+        const {useAuth, useTLS, useTLSAuth, useResumeTokenAuth} = this._serviceConfiguration;
 
-        if (useAuth && useTLS && useTLSAuth && useResumeToken) {
+        if (useAuth && useTLS && useTLSAuth && useResumeTokenAuth) {
             logger.error('You cannot use multiple authentications at the same time.');
             throw Error('Wrong Authentication Methods.')
         }
@@ -81,7 +81,7 @@ class Service {
             bundesstrasseConfiguration.tlsConfiguration = this._serviceConfiguration.tlsConfiguration;
         }
 
-        if (this._serviceConfiguration.useResumeToken) {
+        if (this._serviceConfiguration.useResumeTokenAuth) {
             bundesstrasseConfiguration.onchallenge = this.onChallenge.bind(this);
             bundesstrasseConfiguration.authid = "resume";
             bundesstrasseConfiguration.authmethods = ["resume"];
@@ -142,7 +142,8 @@ class Service {
                     this._pingInstance.startPing();
                 }
 
-                session.welcomeDict = welcomeDict;
+                logger.debug('welcomeDict', welcomeDict);
+                logger.debug('session: ', session);
 
                 resolve({
                     session,
