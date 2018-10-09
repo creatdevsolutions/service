@@ -8,11 +8,13 @@ let serviceConfiguration = {
     url: 'wss://localhost:8000',
     isPingEnabled: false,
     pingInterval: 5000,
-    //user: 'example',
-    //password: 'root',
-    //useAuth: true,
 };
 
+if (process.env.USE_AUTH) {
+    serviceConfiguration.user = 'example';
+    serviceConfiguration.password = 'root';
+    serviceConfiguration.useAuth = true;
+}
 
 if (process.env.USE_TLS) {
 
@@ -34,7 +36,7 @@ if (process.env.USE_TLS) {
 
 const service = new Service(serviceConfiguration);
 
-service.connect().then((session) => {
+service.connect().then(({session, welcomeDict}) => {
     service.registerAll([
         {
             name: 'com.service.test',
@@ -67,9 +69,8 @@ service.connect().then((session) => {
 
 
     session.call('com.service.test').then((result) => {
-        //service.closeConnection();
+        service.closeConnection();
     })
-}).catch((err) => {
-
+}).catch(({reason, details}) => {
+    console.error(reason, details)
 });
-
