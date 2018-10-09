@@ -18,6 +18,14 @@ class Service {
         this._pingInstance = new Ping(this, this._serviceConfiguration.pingInterval || 1000);
 
 
+        const isDebug = !!this._serviceConfiguration.isDebug;
+
+        if (isDebug) {
+            Logger.setLogLevel('DEBUG');
+        } else {
+            Logger.setLogLevel('WARN');
+        }
+
         logger.info('Created Service.')
 
     }
