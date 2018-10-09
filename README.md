@@ -28,7 +28,7 @@ We are using anonymous authentication by default.
 #### Ticket Authentication
 
 + `useAuth` - Boolean - Enables ticket authentication
-+ `username` - String - Username
++ `user` - String - Username
 + `password` - String - Password
 + `generateResumeToken` - Boolean - Generates a new resume token, if the authentication was successful.
 
