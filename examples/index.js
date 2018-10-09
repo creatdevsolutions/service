@@ -26,7 +26,7 @@ if (process.env.USE_TLS) {
     const cert = fs.readFileSync(certPath);
     const key = fs.readFileSync(keyPath);
 
-    serviceConfiguration.useTLS = true;
+    serviceConfiguration.useTLSAuth = true;
     serviceConfiguration.tlsConfiguration = {
         ca,
         cert,
