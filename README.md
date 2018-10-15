@@ -7,7 +7,7 @@ This is a reimplementation from [service](https://github.com/EmbeddedEnterprises
 
 ## Usage
 
-See `examples/index.js` for a usage example.
+See `examples/index.ts` for a usage example.
 
 ## Configuration
 

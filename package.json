@@ -1,28 +1,60 @@
 {
-	"name": "@creatdevsolutions/service",
-	"version": "0.0.6",
-	"publishConfig": {
-		"registry": "https://registry.npmjs.com",
-		"access": "public"
-	},
-	"description": "Node Implementation for Service Lib from Embedded Enterprises",
-	"main": "index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/creatdevsolutions/service.git"
-	},
-	"author": "Johann Wagner, Martin Koppehel",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/creatdevsolutions/service/issues"
-	},
-	"homepage": "https://github.com/creatdevsolutions/service#readme",
-	"dependencies": {
-		"@creatdevsolutions/bundesstrasse": "^18.10.17",
-		"lodash": "^4.17.10",
-		"logplease": "^1.2.14"
-	}
+  "name": "@creatdevsolutions/service",
+  "version": "0.0.6",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.com",
+    "access": "public"
+  },
+  "description": "Node Implementation for Service Lib from Embedded Enterprises",
+  "main": "build/index",
+  "scripts": {
+    "clean:build": "rimraf ./build",
+    "dist": "cd ./dit/lib && npm publish",
+    "lint": "tslint src/**/* ",
+    "lintfix": "tslint --fix src/**/* ./test",
+    "testonly": "cross-env NODE_ENV=test NODE_PATH=src nyc mocha",
+    "test": "npm run lint && npm run testonly",
+    "test-watch": "npm run testonly -- --watch --watch-extensions ts,tsx",
+    "type-check": "tsc -p ./tsconfig.json --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "build": "npm run clean:build && npm run lint && npm run build:js",
+    "build:js": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/creatdevsolutions/service.git"
+  },
+  "author": "Johann Wagner, Martin Koppehel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/creatdevsolutions/service/issues"
+  },
+  "homepage": "https://github.com/creatdevsolutions/service#readme",
+  "dependencies": {
+    "@creatdevsolutions/bundesstrasse": "^18.10.17",
+    "lodash": "^4.17.10",
+    "logplease": "^1.2.14"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.0.0",
+    "@material-ui/core": "^3.1.1",
+    "@material-ui/icons": "^3.0.1",
+    "@types/classnames": "^2.2.6",
+    "@types/filesize": "^3.6.0",
+    "@types/jsdom": "^11.12.0",
+    "@types/lodash": "^4.14.117",
+    "@types/react": "^16.4.2",
+    "@types/react-dom": "^16.0.7",
+    "awesome-typescript-loader": "^5.2.1",
+    "rimraf": "^2.6.1",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.20.2"
+  }
 }

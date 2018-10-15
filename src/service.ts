@@ -1,16 +1,59 @@
 /**
  * Service is the main class, which communicates with the Interconnect.
  */
+import {Ping} from "./ping";
 
-const bundesstrasse = require('@creatdevsolutions/bundesstrasse');
-const Logger = require('logplease');
-const logger = Logger.create('service.js');
-const _ = require('lodash');
-const Ping = require('./ping.js');
+// @ts-ignore
+import bundesstrasse from "@creatdevsolutions/bundesstrasse";
+
+const Logger = require("logplease");
+const logger = Logger.create("service.js");
+const _ = require("lodash");
+
+
+type ServiceConfiguration = {
+    realm: String,
+    url: String,
+    enableRetry?: boolean,
+    isPingEnabled?: boolean,
+    isDebug?: boolean
+};
+
+type Procedure = {
+    name: string,
+    handler: (args: [any], kwagrs: any, details: any) => any,
+    options: Object,
+};
+
+type BundesstrasseConfiguration = {
+    realm: String,
+    url: String,
+    max_retries: Number,
+
+    onchallenge?: (session: any, method: String, extra: Object) => [any] | string,
+    authid?: string,
+    authmethods?: [string],
+    tlsConfiguration?: {
+        ca: String | Buffer,
+        cert: String | Buffer,
+        key: String | Buffer
+    }
+
+
+};
+
+type ChallengeExtra = {
+    "generate-token"?: boolean
+};
 
 class Service {
 
-    constructor(serviceConfiguration) {
+    private readonly _serviceConfiguration: any;
+    private _bundesstrasseConnection: any;
+    public _bundesstrasseSession: any;
+    private _pingInstance: Ping;
+
+    constructor(serviceConfiguration: ServiceConfiguration) {
         this._serviceConfiguration = serviceConfiguration;
         this._bundesstrasseConnection = null;
         this._bundesstrasseSession = null;
@@ -21,33 +64,33 @@ class Service {
         const isDebug = !!this._serviceConfiguration.isDebug;
 
         if (isDebug) {
-            Logger.setLogLevel('DEBUG');
+            Logger.setLogLevel("DEBUG");
         } else {
-            Logger.setLogLevel('WARN');
+            Logger.setLogLevel("WARN");
         }
 
-        logger.info('Created Service.')
+        logger.info("Created Service.");
 
     }
 
-    onChallenge(session, method, extra) {
+    onChallenge(session: any, method: String) {
 
-        const challengeExtra = {};
+        const challengeExtra: ChallengeExtra = {};
 
         if (this._serviceConfiguration.generateResumeToken) {
-            challengeExtra['generate-token'] = true;
+            challengeExtra["generate-token"] = true;
         }
 
 
         // Ticket Authentication
-        if (method === 'ticket') {
+        if (method === "ticket") {
             return [this._serviceConfiguration.password, challengeExtra];
-        } else if (method === 'tls') {
+        } else if (method === "tls") {
             return "";
-        } else if (method === 'resume') {
+        } else if (method === "resume") {
             return [this._serviceConfiguration.resumeToken, challengeExtra];
         } else {
-            throw Error(`No Challenge for Authentication Method ${method}`)
+            throw Error(`No Challenge for Authentication Method ${method}`);
         }
 
     }
@@ -56,23 +99,22 @@ class Service {
      * Generates a valid autobahn configuration object, which is controlled by the serviceConfiguration.
      */
     getBundesstrasseConfiguration() {
-        const bundesstrasseConfiguration = {
+        const bundesstrasseConfiguration: BundesstrasseConfiguration = {
             url: this._serviceConfiguration.url,
             realm: this._serviceConfiguration.realm,
             max_retries: this._serviceConfiguration.enableRetry ? 15 : 0,
-            isPingEnabled: this._serviceConfiguration.isPingEnabled,
         };
 
         if (this._serviceConfiguration.useTLS) {
-            logger.warn('Using useTLS is outdated. Use useTLSAuth instead.');
-            logger.info('useTLS only defines the authentication method and has no effect for using ws or wss.')
+            logger.warn("Using useTLS is outdated. Use useTLSAuth instead.");
+            logger.info("useTLS only defines the authentication method and has no effect for using ws or wss.");
         }
 
         const {useAuth, useTLS, useTLSAuth, useResumeTokenAuth} = this._serviceConfiguration;
 
         if (useAuth && useTLS && useTLSAuth && useResumeTokenAuth) {
-            logger.error('You cannot use multiple authentications at the same time.');
-            throw Error('Wrong Authentication Methods.')
+            logger.error("You cannot use multiple authentications at the same time.");
+            throw Error("Wrong Authentication Methods.");
         }
 
 
@@ -99,30 +141,30 @@ class Service {
     }
 
     closeConnection() {
-        this._bundesstrasseConnection.close(null, 'User closed connection.');
+        this._bundesstrasseConnection.close(null, "User closed connection.");
     }
 
-    registerAll(registerProcedures) {
+    registerAll(registerProcedures: [Procedure]) {
 
         if (!this._bundesstrasseSession) {
-            throw Error('No Autobahn Session.')
+            throw Error("No Autobahn Session.");
         }
 
-        _.forEach(registerProcedures, procedure => {
+        _.forEach(registerProcedures, (procedure: Procedure) => {
             const {name, handler, options} = procedure;
             logger.info(`Registering RPC ${name}.`);
             this._bundesstrasseSession.register(name, handler, options);
 
-        })
+        });
     }
 
-    subscribeAll(subscribeProcedures) {
+    subscribeAll(subscribeProcedures: [Procedure]) {
 
         if (!this._bundesstrasseSession) {
-            throw Error('No Autobahn Session.')
+            throw Error("No Autobahn Session.");
         }
 
-        _.forEach(subscribeProcedures, procedure => {
+        _.forEach(subscribeProcedures, (procedure: Procedure) => {
             const {name, handler, options} = procedure;
             logger.info(`Subscribing RPC ${name}.`);
             this._bundesstrasseSession.subscribe(name, handler, options);
@@ -132,7 +174,7 @@ class Service {
 
 
     connect() {
-        logger.info('Trying to connect to Router.');
+        logger.info("Trying to connect to Router.");
 
         const bundesstrasseConfiguration = this.getBundesstrasseConfiguration();
         this._bundesstrasseConnection = new bundesstrasse.Connection(bundesstrasseConfiguration);
@@ -142,16 +184,16 @@ class Service {
 
             let isPromiseRejected = false;
 
-            this._bundesstrasseConnection.onopen = (session, welcomeDict) => {
-                logger.info('Connected is open and healthy.');
+            this._bundesstrasseConnection.onopen = (session: any, welcomeDict: any) => {
+                logger.info("Connected is open and healthy.");
                 this._bundesstrasseSession = session;
 
-                if (bundesstrasseConfiguration.isPingEnabled) {
+                if (this._serviceConfiguration.isPingEnabled) {
                     this._pingInstance.startPing();
                 }
 
-                logger.debug('welcomeDict', welcomeDict);
-                logger.debug('session: ', session);
+                logger.debug("welcomeDict", welcomeDict);
+                logger.debug("session: ", session);
 
                 resolve({
                     session,
@@ -159,7 +201,7 @@ class Service {
                 });
             };
 
-            this._bundesstrasseConnection.onclose = (reason, details) => {
+            this._bundesstrasseConnection.onclose = (reason: String, details: Object) => {
 
                 /**
                  * There is a bug in autobahn.js, where onclose is called multiple times for god known reasons.
@@ -173,13 +215,13 @@ class Service {
                 }
 
                 isPromiseRejected = true;
-                if (bundesstrasseConfiguration.isPingEnabled) {
+                if (this._serviceConfiguration.isPingEnabled) {
                     this._pingInstance.endPing();
                 }
 
-                logger.error('Connection was closed.');
-                logger.error('Reason: ', reason);
-                logger.error('Details: ', details);
+                logger.error("Connection was closed.");
+                logger.error("Reason: ", reason);
+                logger.error("Details: ", details);
                 reject({
                     reason,
                     details
@@ -188,9 +230,11 @@ class Service {
 
             this._bundesstrasseConnection.open();
 
-        })
+        });
     }
 
 }
 
-module.exports = Service;
+export {
+    Service
+};
