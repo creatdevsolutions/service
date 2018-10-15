@@ -1,4 +1,4 @@
-const Service = require('../build/service');
+const Service = require('../build/index');
 
 const fs = require('fs');
 const path = require('path');
