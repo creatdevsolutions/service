@@ -1,4 +1,4 @@
-const Service = require('../src/service');
+const Service = require('../build/service');
 
 const fs = require('fs');
 const path = require('path');
@@ -40,7 +40,7 @@ service.connect().then(({session, welcomeDict}) => {
     service.registerAll([
         {
             name: 'com.service.test',
-            handler: (args, kwagrs, details) => {
+            handler: (args, kwArgs, details) => {
 
                 // Do Magic
 
@@ -55,7 +55,7 @@ service.connect().then(({session, welcomeDict}) => {
     service.subscribeAll([
         {
             name: 'com.otherservice.test',
-            handler: (args, kwagrs, details) => {
+            handler: (args, kwArgs, details) => {
 
                 // Do Magic
 
