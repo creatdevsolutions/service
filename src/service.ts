@@ -5,46 +5,13 @@ import {Ping} from "./ping";
 
 // @ts-ignore
 import bundesstrasse from "@creatdevsolutions/bundesstrasse";
+import {BundesstrasseConfiguration, ChallengeExtra, Procedure, ServiceConfiguration} from "./types/types";
 
 const Logger = require("logplease");
 const logger = Logger.create("service.js");
 const _ = require("lodash");
 
 
-type ServiceConfiguration = {
-    realm: String,
-    url: String,
-    enableRetry?: boolean,
-    isPingEnabled?: boolean,
-    isDebug?: boolean
-};
-
-type Procedure = {
-    name: string,
-    handler: (args: [any], kwagrs: any, details: any) => any,
-    options: Object,
-};
-
-type BundesstrasseConfiguration = {
-    realm: String,
-    url: String,
-    max_retries: Number,
-
-    onchallenge?: (session: any, method: String, extra: Object) => [any] | string,
-    authid?: string,
-    authmethods?: [string],
-    tlsConfiguration?: {
-        ca: String | Buffer,
-        cert: String | Buffer,
-        key: String | Buffer
-    }
-
-
-};
-
-type ChallengeExtra = {
-    "generate-token"?: boolean
-};
 
 class Service {
 
