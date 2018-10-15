@@ -111,7 +111,7 @@ class Service {
         this._bundesstrasseConnection.close(null, "User closed connection.");
     }
 
-    registerAll(registerProcedures: [Procedure]) {
+    registerAll(registerProcedures: Procedure[]) {
 
         if (!this._bundesstrasseSession) {
             throw Error("No Autobahn Session.");
@@ -125,7 +125,7 @@ class Service {
         });
     }
 
-    subscribeAll(subscribeProcedures: [Procedure]) {
+    subscribeAll(subscribeProcedures: Procedure[]) {
 
         if (!this._bundesstrasseSession) {
             throw Error("No Autobahn Session.");
