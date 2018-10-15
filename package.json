@@ -21,7 +21,7 @@
 	},
 	"homepage": "https://github.com/creatdevsolutions/service#readme",
 	"dependencies": {
-		"@creatdevsolutions/bundesstrasse": "^18.10.10",
+		"@creatdevsolutions/bundesstrasse": "^18.10.17",
 		"lodash": "^4.17.10",
 		"logplease": "^1.2.14"
 	}

@@ -179,6 +179,7 @@ class Service {
 
                 logger.error('Connection was closed.');
                 logger.error('Reason: ', reason);
+                logger.error('Details: ', details);
                 reject({
                     reason,
                     details
