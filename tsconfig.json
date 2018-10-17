@@ -23,7 +23,7 @@
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": false,
         "sourceMap": true,
-        "importHelpers": true,
+        "importHelpers": false,
         "jsx": "react",
         "moduleResolution": "node",
         "module": "commonjs",
