@@ -1,6 +1,6 @@
 {
   "name": "@creatdevsolutions/service",
-  "version": "0.0.9",
+  "version": "0.0.10-beta1",
   "publishConfig": {
     "registry": "https://registry.npmjs.com",
     "access": "public"
