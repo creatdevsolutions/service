@@ -117,12 +117,14 @@ class Service {
             throw Error("No Autobahn Session.");
         }
 
-        _.forEach(registerProcedures, (procedure: Procedure) => {
+        const allPromises = _.map(registerProcedures, (procedure: Procedure) => {
             const {name, handler, options} = procedure;
             logger.info(`Registering RPC ${name}.`);
-            this._bundesstrasseSession.register(name, handler, options);
+            return this._bundesstrasseSession.register(name, handler, options);
 
         });
+
+        return Promise.all(allPromises);
     }
 
     subscribeAll(subscribeProcedures: Procedure[]) {
@@ -131,11 +133,13 @@ class Service {
             throw Error("No Autobahn Session.");
         }
 
-        _.forEach(subscribeProcedures, (procedure: Procedure) => {
+        const allPromises = _.map(subscribeProcedures, (procedure: Procedure) => {
             const {name, handler, options} = procedure;
             logger.info(`Subscribing RPC ${name}.`);
-            this._bundesstrasseSession.subscribe(name, handler, options);
+            return this._bundesstrasseSession.subscribe(name, handler, options);
         });
+
+        return Promise.all(allPromises);
 
     }
 
