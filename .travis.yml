@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "10"
+
+jobs:
+  include:
+    - stage: Tests
+      script: npm test
+    - stage: Build
+      script: npm run build
