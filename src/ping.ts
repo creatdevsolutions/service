@@ -6,7 +6,7 @@ const logger = Logger.create("ping.js");
 class Ping {
 
     private _serviceInst: Service;
-    private _intervalId?: number;
+    private _intervalId?: NodeJS.Timeout;
     private readonly _intervalInMilliseconds?: number;
 
     constructor(service: Service, intervalInMilliseconds: number) {
