@@ -4,7 +4,8 @@ node_js:
 
 jobs:
   include:
-    - stage: Tests
+    - stage: Test and Build
+      name: Test
       script: npm test
-    - stage: Build
+    - name: Build
       script: npm run build
