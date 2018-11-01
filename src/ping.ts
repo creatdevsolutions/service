@@ -45,13 +45,13 @@ class Ping {
             return;
         }
 
-        this._intervalId = window.setInterval(this.pingAutobahnkreuz.bind(this), this._intervalInMilliseconds);
+        this._intervalId = setInterval(this.pingAutobahnkreuz.bind(this), this._intervalInMilliseconds);
         logger.debug("Enabled ping interval.");
     }
 
     endPing() {
         if (this._intervalId) {
-            window.clearInterval(this._intervalId);
+            clearInterval(this._intervalId);
             logger.debug("Ended ping interval.");
         } else {
             logger.warn("Tried to end ping interval, but there was none.");
@@ -62,4 +62,3 @@ class Ping {
 export {
     Ping
 };
-
