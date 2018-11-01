@@ -1,5 +1,7 @@
 # Service Library
 
+![TravisCI](https://travis-ci.org/creatdevsolutions/service.svg?branch=master)
+
 ## Introduction
 
 This is a service library implementation for Interconnect from [Embedded Enterprises](https://github.com/EmbeddedEnterprises).
