@@ -4,7 +4,7 @@
 import {Ping} from "./ping";
 
 // @ts-ignore
-import bundesstrasse from "@creatdevsolutions/bundesstrasse";
+import * as bundesstrasse from "@creatdevsolutions/bundesstrasse";
 import {BundesstrasseConfiguration, ChallengeExtra, Procedure, ServiceConfiguration} from "./types/types";
 
 const Logger = require("logplease");
