@@ -6,19 +6,19 @@
     "access": "public"
   },
   "description": "Node Implementation for Service Lib from Embedded Enterprises",
-  "main": "build/index",
+  "main": "build/cjs/index.js",
+  "module": "build/module/index.js",
+  "types": "build/types/index.d.ts",
+  "private": false,
+  "files": [
+    "build"
+  ],
   "scripts": {
-    "clean:build": "rimraf ./build",
-    "dist": "cd ./dit/lib && npm publish",
-    "lint": "tslint src/**/* ",
-    "lintfix": "tslint --fix src/**/* ./test",
-    "testonly": "cross-env NODE_ENV=test NODE_PATH=src nyc mocha",
-    "test": "npm run lint && npm run testonly",
-    "test-watch": "npm run testonly -- --watch --watch-extensions ts,tsx",
-    "type-check": "tsc -p ./tsconfig.json --noEmit",
-    "type-check:watch": "npm run type-check -- --watch",
-    "build": "npm run clean:build && npm run lint && npm run build:js",
-    "build:js": "tsc"
+    "build": "npm run lint && npm run build:ts",
+    "build:clean": "rm -rf build && npm run build",
+    "build:ts": "tsc -p tsconfig.module.json && tsc -p tsconfig.cjs.json",
+    "build:docs": "typedoc --out docs --readme README.md --target esnext --theme default --mode file src --ignoreCompilerErrors",
+    "lint": "tslint -c tslint.json src/**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -46,7 +46,7 @@
     "@material-ui/core": "^3.1.1",
     "@material-ui/icons": "^3.0.1",
     "@types/lodash": "^4.14.117",
-    "@types/node": "^10.11.7",
+    "@types/node": "^10.12.2",
     "awesome-typescript-loader": "^5.2.1",
     "cross-env": "^5.2.0",
     "mocha": "^5.2.0",
