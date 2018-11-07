@@ -1,4 +1,5 @@
 import {Service} from "./service";
+import Timeout = NodeJS.Timeout;
 
 const Logger = require("logplease");
 const logger = Logger.create("ping.js");
@@ -6,7 +7,7 @@ const logger = Logger.create("ping.js");
 class Ping {
 
     private _serviceInst: Service;
-    private _intervalId?: NodeJS.Timeout;
+    private _intervalId?: NodeJS.Timeout | null;
     private readonly _intervalInMilliseconds?: number;
 
     constructor(service: Service, intervalInMilliseconds: number) {
@@ -45,7 +46,7 @@ class Ping {
             return;
         }
 
-        this._intervalId = setInterval(this.pingAutobahnkreuz.bind(this), this._intervalInMilliseconds);
+        this._intervalId = setInterval(this.pingAutobahnkreuz.bind(this), this._intervalInMilliseconds) as any as Timeout;
         logger.debug("Enabled ping interval.");
     }
 

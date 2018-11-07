@@ -17,6 +17,7 @@
             "node"
         ],
         "esModuleInterop": true,
+        "strict": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
         "noUnusedLocals": true,

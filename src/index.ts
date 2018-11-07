@@ -1,5 +1,11 @@
 import {Service} from "./service";
+import {Errors} from "./errors"
 
-export = Service;
+
+export default Service;
+
+export {
+    Errors,
+}
 
 
