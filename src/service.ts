@@ -6,6 +6,7 @@ import {Ping} from "./ping";
 // @ts-ignore
 import * as bundesstrasse from "@creatdevsolutions/bundesstrasse";
 import {BundesstrasseConfiguration, ChallengeExtra, Procedure, ServiceConfiguration} from "./types/types";
+import {Errors} from "./errors";
 
 const Logger = require("logplease");
 const logger = Logger.create("service.js");
@@ -15,6 +16,7 @@ const _ = require("lodash");
 
 class Service {
 
+    public static Errors = Errors
     private readonly _serviceConfiguration: any;
     private _bundesstrasseConnection: any;
     public _bundesstrasseSession: any;
