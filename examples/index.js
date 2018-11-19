@@ -1,4 +1,4 @@
-const Service = require('../build/index');
+const Service = require('../build/index').Service;
 
 const fs = require('fs');
 const path = require('path');
